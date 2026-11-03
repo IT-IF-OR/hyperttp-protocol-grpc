@@ -1,0 +1,27 @@
+{
+  "name": "@hyperttp/protocol-grpc",
+  "version": "0.2.0",
+  "description": "grpc",
+  "keywords": [
+    "grpc"
+  ],
+  "license": "MIT",
+  "author": "dirold2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IT-IF-OR/hyperttp-protocol-grpc.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@hyperttp/types": "^0.5.3",
+    "typescript": "^7.0.2"
+  },
+  "private": true
+}
