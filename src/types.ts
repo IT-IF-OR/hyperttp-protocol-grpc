@@ -38,6 +38,35 @@ export interface GrpcResponse<TRes = unknown> {
   grpcMessage?: string;
   data: TRes;
   headers: Record<string, string>;
+  trailers: Record<string, string>;
+}
+
+/**
+ * @ru Разобранный unary gRPC-запрос на сервере. `message` — raw Protobuf payload
+ * без 5-байтового gRPC-фрейма.
+ * @en Parsed unary gRPC server request. `message` is the raw Protobuf payload
+ * without the 5-byte gRPC frame.
+ */
+export interface GrpcServerRequest {
+  readonly service: string;
+  readonly method: string;
+  readonly headers: Readonly<Record<string, string | string[]>>;
+  readonly message: Uint8Array;
+  readonly compressed: boolean;
+}
+
+/**
+ * @ru Ответ серверного gRPC-обработчика. `body` — raw Protobuf payload;
+ * ресивер сам добавляет gRPC-фрейм и trailers.
+ * @en Server gRPC handler response. `body` is the raw Protobuf payload; the
+ * receiver adds the gRPC frame and trailers.
+ */
+export interface GrpcServerResponse {
+  readonly body?: Uint8Array;
+  readonly grpcStatus?: number;
+  readonly grpcMessage?: string;
+  readonly headers?: Record<string, string>;
+  readonly trailers?: Record<string, string>;
 }
 
 export interface GrpcRequestOptions {
@@ -59,6 +88,14 @@ declare module "@hyperttp/types" {
 
   interface ProtocolMetadataMap {
     grpc: GrpcMetadata;
+  }
+
+  interface ProtocolServerRequestMap {
+    grpc: GrpcServerRequest;
+  }
+
+  interface ProtocolServerResponseMap {
+    grpc: GrpcServerResponse;
   }
 
   interface HyperProtocols {

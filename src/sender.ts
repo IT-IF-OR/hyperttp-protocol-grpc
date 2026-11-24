@@ -105,9 +105,13 @@ export class GrpcSender implements HyperSender<
    */
   parse(raw: TransportResponse, ctx: RequestContext): UniversalResponse<GrpcResponse<unknown>> {
     const headers = this.flattenHeaders(raw.headers);
-    const rawStatus = getHeader(headers, "grpc-status") ?? "0";
+    const trailers = this.flattenHeaders(raw.trailers ?? {});
+    const rawStatus =
+      getHeader(trailers, "grpc-status") ?? getHeader(headers, "grpc-status") ?? "0";
     const grpcStatus = parseInt(rawStatus, 10);
-    const grpcMessage = this.decodeGrpcMessage(getHeader(headers, "grpc-message"));
+    const grpcMessage = this.decodeGrpcMessage(
+      getHeader(trailers, "grpc-message") ?? getHeader(headers, "grpc-message"),
+    );
     const httpOk = raw.status >= 200 && raw.status < 300;
     const ok = httpOk && grpcStatus === 0;
 
@@ -125,8 +129,9 @@ export class GrpcSender implements HyperSender<
       status: raw.status,
       statusText: raw.statusText,
       headers: raw.headers,
+      trailers: raw.trailers,
       url: raw.url,
-      data: { ok, grpcStatus, grpcMessage, data, headers },
+      data: { ok, grpcStatus, grpcMessage, data, headers, trailers },
       raw,
     };
   }

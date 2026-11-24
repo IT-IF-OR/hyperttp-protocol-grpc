@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import type { RequestContext } from "@hyperttp/types";
-import { decodeGrpcFrame, encodeGrpcFrame, GrpcSender, GrpcTestTransport } from "../src/index.js";
+import {
+  decodeGrpcFrame,
+  encodeGrpcFrame,
+  GrpcReceiver,
+  GrpcSender,
+  GrpcTestTransport,
+} from "../src/index.js";
 
 const context = (): RequestContext => ({
   requestId: "grpc-test",
@@ -95,6 +101,49 @@ describe("gRPC sender pipeline", () => {
     expect(result.ok).toBe(false);
     expect(result.data.grpcMessage).toBe("%invalid");
   });
+  it("reads grpc-status from trailers", () => {
+    const result = new GrpcSender().parse(
+      {
+        status: 200,
+        headers: { "content-type": "application/grpc" },
+        trailers: { "grpc-status": "7", "grpc-message": "Permission%20denied" },
+        body: null,
+      },
+      context(),
+    );
+    expect(result.data).toMatchObject({ grpcStatus: 7, grpcMessage: "Permission denied" });
+    expect(result.trailers).toEqual({ "grpc-status": "7", "grpc-message": "Permission%20denied" });
+  });
+
+  it("encodes grpc-message for grpc-js compatible errors", () => {
+    const response = new GrpcReceiver().respond(
+      { grpcStatus: 3, grpcMessage: "bad / input" },
+      context(),
+    );
+    expect(response.trailers).toEqual({ "grpc-status": "3", "grpc-message": "bad%20/%20input" });
+  });
+
+  it("parses a unary request and emits grpc trailers", async () => {
+    const receiver = new GrpcReceiver({
+      handler: (request) => ({ body: request.message }),
+    });
+    const request = await receiver.receive(
+      {
+        method: "POST",
+        url: "/example.Echo/Call",
+        headers: { "content-type": "application/grpc" },
+        body: encodeGrpcFrame(bytes),
+        protocol: "grpc",
+      },
+      context(),
+    );
+    expect(request).toMatchObject({ service: "example.Echo", method: "Call", message: bytes });
+    const response = receiver.respond(await receiver.handle(request, context()), context());
+    expect(response.headers).toEqual({ "content-type": "application/grpc" });
+    expect(response.trailers).toEqual({ "grpc-status": "0" });
+    expect(decodeGrpcFrame(response.body as Uint8Array).payload).toEqual(bytes);
+  });
+
   it("propagates transport failures", async () => {
     const error = new Error("connection failed");
     await expect(

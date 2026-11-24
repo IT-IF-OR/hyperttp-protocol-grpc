@@ -52,8 +52,8 @@ export class GrpcTestTransport implements HyperTransport {
     return {
       status: 200,
       statusText: "OK",
-      headers: {
-        "content-type": "application/grpc",
+      headers: { "content-type": "application/grpc" },
+      trailers: {
         "grpc-status": String(grpcStatus),
         ...(result.grpcMessage ? { "grpc-message": result.grpcMessage } : {}),
       },
