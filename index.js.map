@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["index.js"],
+  "sourcesContent": ["import { GrpcReceiver } from \"./receiver.js\";\nimport { GrpcSender } from \"./sender.js\";\nimport { createGrpcServer } from \"./server.js\";\n/**\n * @ru \u0415\u0434\u0438\u043D\u044B\u0439 gRPC-\u043C\u043E\u0434\u0443\u043B\u044C \u043F\u0440\u043E\u0442\u043E\u043A\u043E\u043B\u0430: \u043A\u043B\u0438\u0435\u043D\u0442\u0441\u043A\u0438\u0439 Sender \u0438 \u0441\u0435\u0440\u0432\u0435\u0440\u043D\u044B\u0439 Receiver.\n * @en Unified gRPC protocol module: client Sender and server Receiver.\n */\nexport const GrpcProtocol = {\n    protocol: \"grpc\",\n    name: \"GrpcProtocol\",\n    server: createGrpcServer,\n    sender: new GrpcSender(),\n    receiver: new GrpcReceiver(),\n};\nexport * from \"./types.js\";\nexport * from \"./sender.js\";\nexport * from \"./receiver.js\";\nexport * from \"./server.js\";\nexport * from \"./framing.js\";\nexport * from \"./test-transport.js\";\n"],
+  "mappings": "aAAA,OAAS,gBAAAA,MAAoB,gBAC7B,OAAS,cAAAC,MAAkB,cAC3B,OAAS,oBAAAC,MAAwB,cAK1B,aAAM,aAAe,CACxB,SAAU,OACV,KAAM,eACN,OAAQA,EACR,OAAQ,IAAID,EACZ,SAAU,IAAID,CAClB,EACA,WAAc,aACd,WAAc,cACd,WAAc,gBACd,WAAc,cACd,WAAc,eACd,WAAc",
+  "names": ["GrpcReceiver", "GrpcSender", "createGrpcServer"]
+}

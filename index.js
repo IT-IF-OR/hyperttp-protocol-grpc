@@ -1,0 +1,2 @@
+"use strict";import{GrpcReceiver as r}from"./receiver.js";import{GrpcSender as o}from"./sender.js";import{createGrpcServer as e}from"./server.js";export const GrpcProtocol={protocol:"grpc",name:"GrpcProtocol",server:e,sender:new o,receiver:new r};export*from"./types.js";export*from"./sender.js";export*from"./receiver.js";export*from"./server.js";export*from"./framing.js";export*from"./test-transport.js";
+//# sourceMappingURL=index.js.map

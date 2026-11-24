@@ -1,0 +1,2 @@
+"use strict";export function encodeGrpcFrame(e,n=!1){const t=new Uint8Array(5+e.byteLength);return t[0]=n?1:0,new DataView(t.buffer,t.byteOffset,t.byteLength).setUint32(1,e.byteLength,!1),t.set(e,5),t}export function decodeGrpcFrame(e){if(e.byteLength<5)throw new Error("Invalid gRPC frame: buffer too short");const n=e[0]===1,r=new DataView(e.buffer,e.byteOffset,e.byteLength).getUint32(1,!1),o=e.subarray(5,5+r);return{compressed:n,payload:o}}
+//# sourceMappingURL=framing.js.map

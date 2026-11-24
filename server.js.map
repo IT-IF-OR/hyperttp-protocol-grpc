@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["server.js"],
+  "sourcesContent": ["export function createGrpcServer(host) {\n    return {\n        handle(handler) {\n            return host.configure({\n                protocol: \"grpc\",\n                handler: (request, context) => handler({ request, context, services: host.services }),\n            });\n        },\n    };\n}\n"],
+  "mappings": "aAAO,gBAAS,iBAAiBA,EAAM,CACnC,MAAO,CACH,OAAOC,EAAS,CACZ,OAAOD,EAAK,UAAU,CAClB,SAAU,OACV,QAAS,CAACE,EAASC,IAAYF,EAAQ,CAAE,QAAAC,EAAS,QAAAC,EAAS,SAAUH,EAAK,QAAS,CAAC,CACxF,CAAC,CACL,CACJ,CACJ",
+  "names": ["host", "handler", "request", "context"]
+}
